@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { CivicLoginButton } from "@/components/CivicLoginButton"
-import { isCivicAuthenticated, hasWallet } from "@/lib/civic"
+import { isCivicAuthenticated } from "@/lib/civic"
+import { hasWallet } from "@/lib/aptos"
 import { Leaf, Shield, Wallet, Heart } from "lucide-react"
 
 export default function LoginPage() {

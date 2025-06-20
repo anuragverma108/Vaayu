@@ -1,3 +1,5 @@
+import { Account } from "@aptos-labs/ts-sdk"
+
 // Aptos wallet and blockchain utilities
 export interface AptosWallet {
   address: string
@@ -15,19 +17,14 @@ export interface HealthProfile {
   location: string
 }
 
-// Generate a new Aptos wallet (mock implementation)
+// Generate a new Aptos wallet (real implementation)
 export function createWallet(): AptosWallet {
-  // In a real implementation, you'd use the Aptos SDK
-  // For now, we'll generate mock wallet data
-  const privateKey = generateRandomHex(64)
-  const publicKey = generateRandomHex(64)
-  const address = `0x${generateRandomHex(40)}`
-
+  const account = Account.generate();
   return {
-    address,
-    privateKey,
-    publicKey,
-  }
+    address: account.accountAddress.toString(),
+    privateKey: account.privateKey.toString(),
+    publicKey: account.publicKey.toString(),
+  };
 }
 
 // Store wallet in session storage
