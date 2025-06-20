@@ -1,31 +1,61 @@
 "use client"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useEffect, useState } from "react"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { AlertTriangle, Wind, MapPin } from "lucide-react"
 
 interface AQIData {
   location: string
   aqi: number
-  level: "Good" | "Moderate" | "Unhealthy for Sensitive Groups" | "Unhealthy" | "Very Unhealthy" | "Hazardous"
+  level:
+    | "Good"
+    | "Moderate"
+    | "Unhealthy for Sensitive Groups"
+    | "Unhealthy"
+    | "Very Unhealthy"
+    | "Hazardous"
   recommendation: string
 }
 
 interface AQIAlertCardProps {
-  data?: AQIData
   className?: string
 }
 
-export function AQIAlertCard({ data, className }: AQIAlertCardProps) {
-  // Mock data if none provided
-  const mockData: AQIData = {
-    location: "San Francisco, CA",
-    aqi: 85,
-    level: "Moderate",
-    recommendation: "Consider reducing outdoor activities if you have respiratory conditions.",
+export function AQIAlertCard({ className }: AQIAlertCardProps) {
+  const [aqiData, setAqiData] = useState<AQIData | null>(null)
+
+  const classifyAQI = (aqi: number): AQIData["level"] => {
+    if (aqi <= 50) return "Good"
+    if (aqi <= 100) return "Moderate"
+    if (aqi <= 150) return "Unhealthy for Sensitive Groups"
+    if (aqi <= 200) return "Unhealthy"
+    if (aqi <= 300) return "Very Unhealthy"
+    return "Hazardous"
   }
 
-  const aqiData = data || mockData
+  const getRecommendation = (level: AQIData["level"]) => {
+    switch (level) {
+      case "Good":
+        return "Enjoy outdoor activities."
+      case "Moderate":
+        return "Sensitive individuals should consider reducing outdoor exertion."
+      case "Unhealthy for Sensitive Groups":
+        return "Limit prolonged outdoor exertion if you have respiratory issues."
+      case "Unhealthy":
+        return "Everyone should reduce prolonged or heavy exertion outdoors."
+      case "Very Unhealthy":
+        return "Avoid outdoor activities. Stay indoors."
+      case "Hazardous":
+        return "Health warnings. Stay indoors and use air purifiers."
+    }
+  }
 
   const getAQIColor = (level: string) => {
     switch (level) {
@@ -46,7 +76,37 @@ export function AQIAlertCard({ data, className }: AQIAlertCardProps) {
     }
   }
 
-  const shouldShowAlert = aqiData.aqi > 50
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords
+        try {
+          const token = process.env.NEXT_PUBLIC_AQICN_TOKEN // 🔐 Put your token in .env
+          const url = `https://api.waqi.info/feed/geo:${latitude};${longitude}/?token=${token}`
+          const res = await fetch(url)
+          const json = await res.json()
+
+          if (json.status === "ok") {
+            const aqi = json.data.aqi
+            const level = classifyAQI(aqi)
+            setAqiData({
+              location: json.data.city.name,
+              aqi,
+              level,
+              recommendation: getRecommendation(level),
+            })
+          }
+        } catch (error) {
+          console.error("Failed to fetch AQI data", error)
+        }
+      },
+      (error) => {
+        console.error("Geolocation error:", error)
+      }
+    )
+  }, [])
+
+  const shouldShowAlert = aqiData?.aqi && aqiData.aqi > 50
 
   return (
     <Card className={className}>
@@ -56,28 +116,39 @@ export function AQIAlertCard({ data, className }: AQIAlertCardProps) {
             <Wind className="w-5 h-5" />
             Air Quality Index
           </CardTitle>
-          {shouldShowAlert && <AlertTriangle className="w-5 h-5 text-orange-500" />}
+          {shouldShowAlert && (
+            <AlertTriangle className="w-5 h-5 text-orange-500" />
+          )}
         </div>
         <CardDescription className="flex items-center gap-1">
           <MapPin className="w-4 h-4" />
-          {aqiData.location}
+          {aqiData?.location || "Detecting..."}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="flex items-center gap-4">
-          <div className="text-3xl font-bold">{aqiData.aqi}</div>
-          <Badge variant="secondary" className={`${getAQIColor(aqiData.level)} text-white`}>
-            {aqiData.level}
-          </Badge>
-        </div>
-
-        <div className="p-3 bg-muted rounded-lg">
-          <p className="text-sm text-muted-foreground">
-            <strong>Recommendation:</strong> {aqiData.recommendation}
-          </p>
-        </div>
-
-        <div className="text-xs text-muted-foreground">Last updated: {new Date().toLocaleTimeString()}</div>
+        {aqiData ? (
+          <>
+            <div className="flex items-center gap-4">
+              <div className="text-3xl font-bold">{aqiData.aqi}</div>
+              <Badge
+                variant="secondary"
+                className={`${getAQIColor(aqiData.level)} text-white`}
+              >
+                {aqiData.level}
+              </Badge>
+            </div>
+            <div className="p-3 bg-muted rounded-lg">
+              <p className="text-sm text-muted-foreground">
+                <strong>Recommendation:</strong> {aqiData.recommendation}
+              </p>
+            </div>
+            <div className="text-xs text-muted-foreground">
+              Last updated: {new Date().toLocaleTimeString()}
+            </div>
+          </>
+        ) : (
+          <div className="text-sm text-muted-foreground">Loading AQI data...</div>
+        )}
       </CardContent>
     </Card>
   )
