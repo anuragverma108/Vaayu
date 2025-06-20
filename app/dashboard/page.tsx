@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { Gift } from "lucide-react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -63,15 +64,26 @@ export default function DashboardPage() {
               <h1 className="text-xl font-bold">Vaayu Dashboard</h1>
             </div>
             <div className="flex items-center gap-4">
-              <Badge variant="secondary" className="flex items-center gap-1">
-                <CheckCircle className="w-3 h-3" />
-                Verified
-              </Badge>
-              <Button variant="ghost" size="sm" onClick={handleLogout}>
-                <LogOut className="w-4 h-4 mr-2" />
-                Logout
-              </Button>
-            </div>
+  <a
+    href="https://voucher-feature-nextjs-eo7u.vercel.app/" // replace with actual rewards URL
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <Button variant="outline" size="sm" className="flex items-center gap-1">
+      <Gift className="w-4 h-4" />
+      Rewards
+    </Button>
+  </a>
+  <Badge variant="secondary" className="flex items-center gap-1">
+    <CheckCircle className="w-3 h-3" />
+    Verified
+  </Badge>
+  <Button variant="ghost" size="sm" onClick={handleLogout}>
+    <LogOut className="w-4 h-4 mr-2" />
+    Logout
+  </Button>
+</div>
+
           </div>
         </div>
       </header>
