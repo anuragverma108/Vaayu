@@ -12,8 +12,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Progress } from "@/components/ui/progress"
-import { getStoredWallet } from "@/lib/aptos"
-import { isCivicAuthenticated } from "@/lib/civic"
+import { getStoredWallet, createWallet, storeWallet } from "@/lib/aptos"
+import { useUser } from "@civic/auth/react"
 import { submitProfileTransaction, type HealthProfile } from "@/lib/aptos"
 import { ArrowLeft, Loader2, CheckCircle, User, Heart, MapPin, Clock } from "lucide-react"
 import Link from "next/link"
@@ -55,7 +55,8 @@ export default function OnboardingPage() {
   const [transactionHash, setTransactionHash] = useState<string>("")
 
   const router = useRouter()
-  const wallet = getStoredWallet()
+  const { user, isLoading: userLoading } = useUser()
+  const wallet = getStoredWallet(user?.id)
 
   // Form state
   const [formData, setFormData] = useState({
@@ -69,13 +70,25 @@ export default function OnboardingPage() {
   })
 
   useEffect(() => {
-    // Check authentication
-    if (!isCivicAuthenticated() || !wallet) {
-      router.push("/login")
-    } else {
-      setIsLoading(false)
+    // Check authentication - use real Civic auth instead of mock
+    if (userLoading) {
+      return // Still loading, wait
     }
-  }, [router, wallet])
+    
+    if (!user) {
+      router.push("/login")
+      return
+    }
+    
+    // If user is authenticated but no wallet exists, create one
+    if (!wallet) {
+      const newWallet = createWallet()
+      storeWallet(newWallet, user.id)
+      console.log("Created new wallet for onboarding:", user.id, newWallet.address)
+    }
+    
+    setIsLoading(false)
+  }, [router, wallet, user, userLoading])
 
   useEffect(() => {
     // Calculate progress based on filled fields

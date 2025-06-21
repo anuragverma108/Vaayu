@@ -14,7 +14,7 @@ export default function DashboardPage() {
   const [copied, setCopied] = useState(false)
   const { user, isLoading } = useUser()
 
-  const wallet = getStoredWallet()
+  const wallet = getStoredWallet(user?.id)
 
   const handleCopyAddress = async () => {
     if (wallet?.address) {
