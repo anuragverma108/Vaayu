@@ -27,29 +27,37 @@ export function createWallet(): AptosWallet {
   };
 }
 
-// Store wallet in session storage with user-specific key
+// Store wallet in local storage with user-specific key
 export function storeWallet(wallet: AptosWallet, userId?: string): void {
   if (typeof window !== "undefined") {
     const key = userId ? `aptos_wallet_${userId}` : "aptos_wallet"
-    sessionStorage.setItem(key, JSON.stringify(wallet))
+    localStorage.setItem(key, JSON.stringify(wallet))
+    console.log(`Wallet stored for user ${userId}:`, wallet.address)
   }
 }
 
-// Retrieve wallet from session storage with user-specific key
+// Retrieve wallet from local storage with user-specific key
 export function getStoredWallet(userId?: string): AptosWallet | null {
   if (typeof window !== "undefined") {
     const key = userId ? `aptos_wallet_${userId}` : "aptos_wallet"
-    const stored = sessionStorage.getItem(key)
-    return stored ? JSON.parse(stored) : null
+    const stored = localStorage.getItem(key)
+    if (stored) {
+      const wallet = JSON.parse(stored)
+      console.log(`Wallet retrieved for user ${userId}:`, wallet.address)
+      return wallet
+    } else {
+      console.log(`No wallet found for user ${userId}`)
+      return null
+    }
   }
   return null
 }
 
-// Clear wallet from session storage with user-specific key
+// Clear wallet from local storage with user-specific key
 export function clearWallet(userId?: string): void {
   if (typeof window !== "undefined") {
     const key = userId ? `aptos_wallet_${userId}` : "aptos_wallet"
-    sessionStorage.removeItem(key)
+    localStorage.removeItem(key)
   }
 }
 
@@ -102,4 +110,17 @@ function generateRandomHex(length: number): string {
 // Check if user has a wallet with user-specific key
 export function hasWallet(userId?: string): boolean {
   return getStoredWallet(userId) !== null
+}
+
+// Clear all wallets (useful for testing)
+export function clearAllWallets(): void {
+  if (typeof window !== "undefined") {
+    const keys = Object.keys(localStorage)
+    keys.forEach(key => {
+      if (key.startsWith('aptos_wallet_')) {
+        localStorage.removeItem(key)
+        console.log(`Cleared wallet: ${key}`)
+      }
+    })
+  }
 }

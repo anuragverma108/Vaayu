@@ -9,14 +9,19 @@ export default function ContinueToDashboardButton() {
   const { user, isLoading } = useUser();
 
   useEffect(() => {
-    if (!isLoading && user) {
-      // Check if wallet exists for this specific user, if not create one
+    if (!isLoading && user?.id) {
+      // Check if wallet exists for this specific user
       const existingWallet = getStoredWallet(user.id);
+      
       if (!existingWallet) {
+        // Only create wallet if it doesn't exist for this user
         const newWallet = createWallet();
         storeWallet(newWallet, user.id);
         console.log("Created new wallet for user:", user.id, newWallet.address);
+      } else {
+        console.log("Using existing wallet for user:", user.id, existingWallet.address);
       }
+      
       setIsAuthed(true);
     } else {
       setIsAuthed(false);

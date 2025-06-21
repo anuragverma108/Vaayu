@@ -15,7 +15,7 @@ import { Progress } from "@/components/ui/progress"
 import { getStoredWallet, createWallet, storeWallet } from "@/lib/aptos"
 import { useUser } from "@civic/auth/react"
 import { submitProfileTransaction, type HealthProfile } from "@/lib/aptos"
-import { ArrowLeft, Loader2, CheckCircle, User, Heart, MapPin, Clock } from "lucide-react"
+import { ArrowLeft, Loader2, CheckCircle, User, Heart, MapPin, Clock, AlertTriangle } from "lucide-react"
 import Link from "next/link"
 
 const CHRONIC_CONDITIONS = [
@@ -75,20 +75,22 @@ export default function OnboardingPage() {
       return // Still loading, wait
     }
     
-    if (!user) {
+    if (!user?.id) {
       router.push("/login")
       return
     }
     
-    // If user is authenticated but no wallet exists, create one
-    if (!wallet) {
-      const newWallet = createWallet()
-      storeWallet(newWallet, user.id)
-      console.log("Created new wallet for onboarding:", user.id, newWallet.address)
+    // Get the existing wallet for this user (should already exist from login)
+    const existingWallet = getStoredWallet(user.id)
+    if (!existingWallet) {
+      console.error("No wallet found for user:", user.id)
+      setError("Wallet not found. Please log in again.")
+      return
     }
     
+    console.log("Using existing wallet for onboarding:", user.id, existingWallet.address)
     setIsLoading(false)
-  }, [router, wallet, user, userLoading])
+  }, [router, user, userLoading])
 
   useEffect(() => {
     // Calculate progress based on filled fields
@@ -121,7 +123,8 @@ export default function OnboardingPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!wallet) {
+    const currentWallet = getStoredWallet(user?.id)
+    if (!currentWallet) {
       setError("No wallet found. Please log in again.")
       return
     }
@@ -152,7 +155,7 @@ export default function OnboardingPage() {
         location: formData.location,
       }
 
-      const result = await submitProfileTransaction(wallet, profileData)
+      const result = await submitProfileTransaction(currentWallet, profileData)
 
       if (result.success) {
         setTransactionHash(result.transactionHash || "")
@@ -171,6 +174,27 @@ export default function OnboardingPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    )
+  }
+
+  if (error && error.includes("Wallet not found")) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <div className="mx-auto w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4">
+              <AlertTriangle className="w-6 h-6 text-red-600" />
+            </div>
+            <CardTitle>Wallet Not Found</CardTitle>
+            <CardDescription>Please log in again to access your wallet</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Link href="/login">
+              <Button className="w-full">Return to Login</Button>
+            </Link>
+          </CardContent>
+        </Card>
       </div>
     )
   }
