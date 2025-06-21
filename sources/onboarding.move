@@ -70,11 +70,28 @@ module onboarding::onboarding {
         }
     }
 
+    // This function is kept for backward compatibility. It performs a destructive read and should not be used.
     public fun get_profile(account: address): UserProfile acquires UserProfile {
         assert!(exists<UserProfile>(account), E_PROFILE_NOT_FOUND);
         move_from<UserProfile>(account)
     }
 
+    #[view]
+    public fun view_profile(account: address): (String, u8, String, vector<String>, String, String, String) acquires UserProfile {
+        assert!(exists<UserProfile>(account), E_PROFILE_NOT_FOUND);
+        let profile = borrow_global<UserProfile>(account);
+        (
+            profile.name,
+            profile.age,
+            profile.gender,
+            profile.chronic_conditions,
+            profile.preferred_walk_time,
+            profile.pollution_sensitivity,
+            profile.location
+        )
+    }
+
+    #[view]
     public fun has_profile(account: address): bool {
         exists<UserProfile>(account)
     }

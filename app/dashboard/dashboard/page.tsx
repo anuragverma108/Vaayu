@@ -1,20 +1,115 @@
 "use client"
 
-import { useState } from "react"
-import { Gift, User as UserIcon, Wallet, FileText, Copy, CheckCircle, ArrowRight, Settings } from "lucide-react"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { Gift, User as UserIcon, Wallet, FileText, Copy, CheckCircle, ArrowRight, Settings, Loader2 } from "lucide-react"
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { AQIAlertCard } from "@/components/AQIAlertCard"
-import { getStoredWallet } from "@/lib/aptos"
+import { getStoredWallet, getProfile, hasUserProfile, type HealthProfile } from "@/lib/aptos"
 import { useUser } from "@civic/auth/react"
+
+function ProfileDisplay({ profile }: { profile: HealthProfile }) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <UserIcon className="w-5 h-5" />
+          Your Health Profile
+        </CardTitle>
+        <CardDescription>This information is securely stored on the blockchain.</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="grid grid-cols-2 gap-4 text-sm">
+          <div>
+            <p className="font-medium text-gray-500">Name</p>
+            <p>{profile.name}</p>
+          </div>
+          <div>
+            <p className="font-medium text-gray-500">Age</p>
+            <p>{profile.age}</p>
+          </div>
+          <div>
+            <p className="font-medium text-gray-500">Gender</p>
+            <p>{profile.gender}</p>
+          </div>
+          <div>
+            <p className="font-medium text-gray-500">Location</p>
+            <p>{profile.location}</p>
+          </div>
+        </div>
+        <div>
+          <p className="font-medium text-gray-500">Chronic Conditions</p>
+          <div className="flex flex-wrap gap-2 mt-2">
+            {profile.chronicCondition.map((condition) => (
+              <Badge key={condition} variant="secondary">
+                {condition}
+              </Badge>
+            ))}
+          </div>
+        </div>
+        <div>
+          <p className="font-medium text-gray-500">Preferred Walk Time</p>
+          <p>{profile.preferredWalkTime}</p>
+        </div>
+        <div>
+          <p className="font-medium text-gray-500">Pollution Sensitivity</p>
+          <p>{profile.pollutionSensitivity}</p>
+        </div>
+        <div className="pt-4">
+          <Link href="/onboarding">
+            <Button variant="outline" className="w-full">
+              Update Profile
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </Link>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
 
 export default function DashboardPage() {
   const [copied, setCopied] = useState(false)
-  const { user, isLoading } = useUser()
+  const [profile, setProfile] = useState<HealthProfile | null | undefined>(undefined)
+  const { user, isLoading: isUserLoading } = useUser()
+  const router = useRouter()
 
   const wallet = getStoredWallet(user?.id)
+
+  useEffect(() => {
+    if (isUserLoading) {
+      return // Wait until user is loaded
+    }
+    if (!user) {
+      router.push("/login")
+      return
+    }
+    if (!wallet) {
+      console.error("No wallet found for user on dashboard, redirecting to login.")
+      router.push("/login")
+      return
+    }
+
+    async function checkProfile() {
+      const { success: profileExists, hasProfile } = await hasUserProfile(wallet!)
+      if (profileExists && hasProfile) {
+        const { success: profileFetched, profile: fetchedProfile } = await getProfile(wallet!)
+        if (profileFetched) {
+          setProfile(fetchedProfile)
+        } else {
+          console.error("Failed to fetch user profile even though it should exist.")
+          setProfile(null)
+        }
+      } else {
+        setProfile(null) // No profile exists
+      }
+    }
+
+    checkProfile()
+  }, [user, isUserLoading, wallet, router])
 
   const handleCopyAddress = async () => {
     if (wallet?.address) {
@@ -24,6 +119,15 @@ export default function DashboardPage() {
     }
   }
 
+  if (isUserLoading || profile === undefined) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin" />
+        <p className="ml-2">Loading your dashboard...</p>
+      </div>
+    )
+  }
+  
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -89,32 +193,35 @@ export default function DashboardPage() {
                 </CardContent>
               </Card>
 
-              {/* Profile Setup Card */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <UserIcon className="w-5 h-5" />
-                    Health Profile Setup
-                  </CardTitle>
-                  <CardDescription>
-                    Complete your health profile to receive personalized recommendations
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium">Create Your Health Profile</p>
-                      <p className="text-sm text-gray-600">Tell us about your health conditions and preferences</p>
+              {profile ? (
+                <ProfileDisplay profile={profile} />
+              ) : (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <UserIcon className="w-5 h-5" />
+                      Health Profile Setup
+                    </CardTitle>
+                    <CardDescription>
+                      Complete your health profile to receive personalized recommendations
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium">Create Your Health Profile</p>
+                        <p className="text-sm text-gray-600">Tell us about your health conditions and preferences</p>
+                      </div>
+                      <Link href="/onboarding">
+                        <Button>
+                          Get Started
+                          <ArrowRight className="w-4 h-4 ml-2" />
+                        </Button>
+                      </Link>
                     </div>
-                    <Link href="/onboarding">
-                      <Button>
-                        Get Started
-                        <ArrowRight className="w-4 h-4 ml-2" />
-                      </Button>
-                    </Link>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              )}
 
               {/* Quick Actions */}
               <Card>
@@ -157,8 +264,17 @@ export default function DashboardPage() {
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Civic ID:</span>
                     <span className="font-mono text-xs">
-                      {isLoading ? "Loading..." : user?.id}
+                      {isUserLoading ? "Loading..." : user?.id}
                     </span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Wallet Address:</span>
+                    <div className="flex items-center gap-2">
+                      <code className="flex-1 text-sm font-mono break-all">{wallet?.address}</code>
+                      <Button variant="ghost" size="sm" onClick={handleCopyAddress} className="shrink-0">
+                        {copied ? <CheckCircle className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                      </Button>
+                    </div>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Status:</span>

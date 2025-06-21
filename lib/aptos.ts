@@ -1,4 +1,4 @@
-import { Account, Aptos, AptosConfig, Network, Ed25519PrivateKey } from "@aptos-labs/ts-sdk"
+import { Account, Aptos, AptosConfig, Network, Ed25519PrivateKey, AccountAddress } from "@aptos-labs/ts-sdk"
 
 // Aptos wallet and blockchain utilities
 export interface AptosWallet {
@@ -22,7 +22,7 @@ const config = new AptosConfig({ network: Network.TESTNET });
 const aptos = new Aptos(config);
 
 // Contract configuration (will be updated after deployment)
-let CONTRACT_ADDRESS = "0x70beae59414f2e9115a4eaace4edd0409643069b056c8996def20d6e8d322f1a";
+let CONTRACT_ADDRESS = "0x70beae59414f2e9115a4eaace4edd0409643069b056c8996def20d6e8d322f1a" // This will be updated after deployment
 let MODULE_NAME = "onboarding"
 
 // Set contract address after deployment
@@ -134,28 +134,37 @@ export async function submitProfileTransaction(
 }
 
 // Get user profile from blockchain
-export async function getUserProfile(
+export async function getProfile(
   wallet: AptosWallet
 ): Promise<{ success: boolean; profile?: any; error?: string }> {
   try {
     const privateKey = new Ed25519PrivateKey(wallet.privateKey);
     const account = Account.fromPrivateKey({ privateKey });
-    
-    // Call the view function to get profile
+
     const payload = {
-      function: `${CONTRACT_ADDRESS}::${MODULE_NAME}::get_profile` as `${string}::${string}::${string}`,
-      type_arguments: [],
-      arguments: [account.accountAddress.toString()],
+      function: `${CONTRACT_ADDRESS}::${MODULE_NAME}::view_profile` as `${string}::${string}::${string}`,
+      functionArguments: [account.accountAddress],
     };
 
-    const result = await aptos.view({payload});
-    
+    const result = await aptos.view({ payload });
+
+    // The view function returns a tuple (array), so we need to map it to our HealthProfile object
+    const profileData: HealthProfile = {
+      name: result[0] as string,
+      age: result[1] as number,
+      gender: result[2] as string,
+      chronicCondition: result[3] as string[],
+      preferredWalkTime: result[4] as string,
+      pollutionSensitivity: result[5] as string,
+      location: result[6] as string,
+    };
+
     return {
       success: true,
-      profile: result[0],
+      profile: profileData,
     };
-  } catch (error) {
-    console.error("Failed to get user profile:", error);
+  } catch (error: any) {
+    console.error("Get Profile Error:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",
@@ -170,14 +179,13 @@ export async function hasUserProfile(
   try {
     const privateKey = new Ed25519PrivateKey(wallet.privateKey);
     const account = Account.fromPrivateKey({ privateKey });
-    
+
     const payload = {
       function: `${CONTRACT_ADDRESS}::${MODULE_NAME}::has_profile` as `${string}::${string}::${string}`,
-      type_arguments: [],
-      arguments: [account.accountAddress.toString()],
+      functionArguments: [account.accountAddress],
     };
 
-    const result = await aptos.view({payload});
+    const result = await aptos.view({ payload });
 
     return {
       success: true,
