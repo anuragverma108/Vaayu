@@ -1,24 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
 import { UserButton } from "@civic/auth/react";
-import { storeCivicUser } from "@/lib/civic";
 import { User } from "@civic/auth";
 
 export default function DashboardClient({ user }: { user: User }) {
-  useEffect(() => {
-    console.log("DashboardClient: Received user prop", user);
-    if (user) {
-      const civicUser = {
-        userId: user.id,
-        token: 'mock_token', // Mocking token as it is not available in the user object
-        verified: true, // Assuming user is verified
-      };
-      console.log("DashboardClient: Storing civicUser", civicUser);
-      storeCivicUser(civicUser);
-    }
-  }, [user]);
-
   return (
     <div className="flex items-center space-x-4">
       <UserButton 

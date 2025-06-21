@@ -27,26 +27,29 @@ export function createWallet(): AptosWallet {
   };
 }
 
-// Store wallet in session storage
-export function storeWallet(wallet: AptosWallet): void {
+// Store wallet in session storage with user-specific key
+export function storeWallet(wallet: AptosWallet, userId?: string): void {
   if (typeof window !== "undefined") {
-    sessionStorage.setItem("aptos_wallet", JSON.stringify(wallet))
+    const key = userId ? `aptos_wallet_${userId}` : "aptos_wallet"
+    sessionStorage.setItem(key, JSON.stringify(wallet))
   }
 }
 
-// Retrieve wallet from session storage
-export function getStoredWallet(): AptosWallet | null {
+// Retrieve wallet from session storage with user-specific key
+export function getStoredWallet(userId?: string): AptosWallet | null {
   if (typeof window !== "undefined") {
-    const stored = sessionStorage.getItem("aptos_wallet")
+    const key = userId ? `aptos_wallet_${userId}` : "aptos_wallet"
+    const stored = sessionStorage.getItem(key)
     return stored ? JSON.parse(stored) : null
   }
   return null
 }
 
-// Clear wallet from session storage
-export function clearWallet(): void {
+// Clear wallet from session storage with user-specific key
+export function clearWallet(userId?: string): void {
   if (typeof window !== "undefined") {
-    sessionStorage.removeItem("aptos_wallet")
+    const key = userId ? `aptos_wallet_${userId}` : "aptos_wallet"
+    sessionStorage.removeItem(key)
   }
 }
 
@@ -96,7 +99,7 @@ function generateRandomHex(length: number): string {
   return result
 }
 
-// Check if user has a wallet
-export function hasWallet(): boolean {
-  return getStoredWallet() !== null
+// Check if user has a wallet with user-specific key
+export function hasWallet(userId?: string): boolean {
+  return getStoredWallet(userId) !== null
 }

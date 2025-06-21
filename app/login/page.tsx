@@ -5,46 +5,19 @@ import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { UserButton } from "@civic/auth-web3/react"
-import { isCivicAuthenticated, hasWallet } from "@/lib/civic"
 import { Leaf, Shield, Wallet, Heart } from "lucide-react"
 import Link from "next/link"
 import ContinueToDashboardButton from "./ContinueToDashboardButton"
 
 export default function LoginPage() {
   const [error, setError] = useState<string>("")
-  const [isLoading, setIsLoading] = useState(true)
-  const [isAuthed, setIsAuthed] = useState(false)
-  const router = useRouter()
-
-  useEffect(() => {
-    // Initial check
-    if (!isCivicAuthenticated() || !hasWallet()) {
-      setIsLoading(false);
-    }
-
-    // Polling for authentication
-    const interval = setInterval(() => {
-      const authed = isCivicAuthenticated() && hasWallet();
-      setIsAuthed(authed);
-    }, 500);
-
-    return () => clearInterval(interval);
-  }, []);
 
   const handleLoginSuccess = () => {
-    router.push("/dashboard")
+    // This will be handled by the ContinueToDashboardButton component
   }
 
   const handleLoginError = (errorMessage: string) => {
     setError(errorMessage)
-  }
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    )
   }
 
   return (
