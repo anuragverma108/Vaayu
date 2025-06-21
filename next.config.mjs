@@ -5,8 +5,10 @@ const nextConfig = {
 };
 
 const withCivicAuth = createCivicAuthPlugin({
-  clientId: "5cefdb7e-d5b2-442a-a7c2-997c06c788cf",
-  loginSuccessUrl: "/dashboard" // Redirect to your dashboard page after login
+  clientId: process.env.NEXT_PUBLIC_CIVIC_CLIENT_ID,
+  appUrl: process.env.NEXT_PUBLIC_APP_URL,
+  loginSuccessUrl: "/dashboard",
+  logoutSuccessUrl: "/",
 });
 
 export default withCivicAuth(nextConfig);
