@@ -1,4 +1,4 @@
-import { Account, Aptos, AptosConfig, Network } from "@aptos-labs/ts-sdk"
+import { Account, Aptos, AptosConfig, Network, PrivateKey } from "@aptos-labs/ts-sdk"
 
 // Aptos wallet and blockchain utilities
 export interface AptosWallet {
@@ -86,7 +86,8 @@ export async function submitProfileTransaction(
 ): Promise<{ success: boolean; transactionHash?: string; error?: string }> {
   try {
     // Create Aptos account from stored wallet
-    const account = Account.fromPrivateKey({ privateKey: wallet.privateKey });
+    const privateKey = new PrivateKey(wallet.privateKey);
+    const account = Account.fromPrivateKey({ privateKey });
 
     const transaction = await aptos.transaction.build.simple({
       sender: account.accountAddress,
@@ -137,7 +138,8 @@ export async function getUserProfile(
   wallet: AptosWallet
 ): Promise<{ success: boolean; profile?: any; error?: string }> {
   try {
-    const account = Account.fromPrivateKey({ privateKey: wallet.privateKey });
+    const privateKey = new PrivateKey(wallet.privateKey);
+    const account = Account.fromPrivateKey({ privateKey });
     
     // Call the view function to get profile
     const payload = {
@@ -166,7 +168,8 @@ export async function hasUserProfile(
   wallet: AptosWallet
 ): Promise<{ success: boolean; hasProfile?: boolean; error?: string }> {
   try {
-    const account = Account.fromPrivateKey({ privateKey: wallet.privateKey });
+    const privateKey = new PrivateKey(wallet.privateKey);
+    const account = Account.fromPrivateKey({ privateKey });
     
     const payload = {
       function: `${CONTRACT_ADDRESS}::${MODULE_NAME}::has_profile`,
