@@ -18,11 +18,11 @@ export interface HealthProfile {
 }
 
 // Initialize Aptos client
-const config = new AptosConfig({ network: Network.DEVNET });
+const config = new AptosConfig({ network: Network.TESTNET });
 const aptos = new Aptos(config);
 
 // Contract configuration (will be updated after deployment)
-let CONTRACT_ADDRESS = "0x1" // This will be updated after deployment
+let CONTRACT_ADDRESS = "0x70beae59414f2e9115a4eaace4edd0409643069b056c8996def20d6e8d322f1a";
 let MODULE_NAME = "onboarding"
 
 // Set contract address after deployment
