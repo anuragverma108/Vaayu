@@ -143,7 +143,7 @@ export async function getUserProfile(
     
     // Call the view function to get profile
     const payload = {
-      function: `${CONTRACT_ADDRESS}::${MODULE_NAME}::get_profile`,
+      function: `${CONTRACT_ADDRESS}::${MODULE_NAME}::get_profile` as `${string}::${string}::${string}`,
       type_arguments: [],
       arguments: [account.accountAddress.toString()],
     };
@@ -172,7 +172,7 @@ export async function hasUserProfile(
     const account = Account.fromPrivateKey({ privateKey });
     
     const payload = {
-      function: `${CONTRACT_ADDRESS}::${MODULE_NAME}::has_profile`,
+      function: `${CONTRACT_ADDRESS}::${MODULE_NAME}::has_profile` as `${string}::${string}::${string}`,
       type_arguments: [],
       arguments: [account.accountAddress.toString()],
     };
