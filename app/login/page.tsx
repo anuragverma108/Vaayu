@@ -21,63 +21,110 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-6">
+    <div className="relative min-h-screen flex items-center justify-center p-4 overflow-hidden">
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute top-0 left-0 w-full h-full object-cover z-0"
+      >
+        <source src="/login_background.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+      <div className="relative z-20 w-full max-w-md space-y-8">
         {/* App Header */}
-        <div className="text-center space-y-2">
+        <div className="text-center space-y-2 animate-fade-in-up">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <div className="p-2 bg-green-500 rounded-full">
+            <div className="p-2 bg-white/10 backdrop-blur-sm rounded-full">
               <Leaf className="w-6 h-6 text-white" />
             </div>
-            <h1 className="text-3xl font-bold text-gray-900">Vaayu</h1>
+            <h1 className="text-4xl font-extrabold text-white tracking-wide">Vaayu</h1>
           </div>
-          <p className="text-gray-600">Your personalized environmental health companion</p>
+          <p className="text-gray-300 font-medium">Your personalized environmental health companion</p>
         </div>
 
         {/* Login Card */}
-        <Card>
-          <CardHeader className="text-center">
-            <CardTitle>Welcome to Vaayu</CardTitle>
-            <CardDescription>Secure login with Civic to access your personalized health dashboard</CardDescription>
+        <Card className="bg-black/60 border border-white/20 shadow-2xl backdrop-blur-lg">
+          <CardHeader
+            className="text-center animate-fade-in-up"
+            style={{ animationDelay: "200ms" }}
+          >
+            <CardTitle className="text-white text-2xl font-semibold">Welcome to Vaayu</CardTitle>
+            <CardDescription className="text-gray-300">
+              Secure login with Civic to access your personalized health dashboard
+            </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-8">
             {/* Features Preview */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-3 text-sm text-gray-600">
-                <Shield className="w-4 h-4 text-green-500" />
+            <div
+              className="space-y-3 text-gray-200 animate-fade-in-up"
+              style={{ animationDelay: "300ms" }}
+            >
+              <div className="flex items-center gap-3 text-sm">
+                <Shield className="w-4 h-4 text-gray-300" />
                 <span>Secure identity verification with Civic</span>
               </div>
-              <div className="flex items-center gap-3 text-sm text-gray-600">
-                <Wallet className="w-4 h-4 text-blue-500" />
+              <div className="flex items-center gap-3 text-sm">
+                <Wallet className="w-4 h-4 text-gray-300" />
                 <span>Personal Aptos wallet for data privacy</span>
               </div>
-              <div className="flex items-center gap-3 text-sm text-gray-600">
-                <Heart className="w-4 h-4 text-red-500" />
+              <div className="flex items-center gap-3 text-sm">
+                <Heart className="w-4 h-4 text-gray-300" />
                 <span>Personalized health recommendations</span>
               </div>
             </div>
 
             {/* Error Alert */}
             {error && (
-              <Alert variant="destructive">
+              <Alert
+                variant="destructive"
+                className="bg-red-900/50 border-red-500 text-white animate-fade-in-up"
+                style={{ animationDelay: "400ms" }}
+              >
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
 
             {/* Login Button */}
-            <UserButton className="w-full" />
+            <div
+              className="animate-fade-in-up"
+              style={{ animationDelay: "500ms" }}
+            >
+              <UserButton className="w-full bg-white hover:bg-gray-200 text-black font-bold py-2 rounded-lg transition-all duration-200" />
+            </div>
 
             {/* Continue to Dashboard Link (client component) */}
-            <ContinueToDashboardButton />
+            <div
+              className="animate-fade-in-up"
+              style={{ animationDelay: "600ms" }}
+            >
+              <ContinueToDashboardButton />
+            </div>
 
-            <div className="text-xs text-center text-gray-500">
-              By logging in, you agree to our Terms of Service and Privacy Policy
+            <div
+              className="text-xs text-center text-gray-400 animate-fade-in-up"
+              style={{ animationDelay: "700ms" }}
+            >
+              By logging in, you agree to our{" "}
+              <a href="#" className="underline hover:text-white">
+                Terms of Service
+              </a>{" "}
+              and{" "}
+              <a href="#" className="underline hover:text-white">
+                Privacy Policy
+              </a>
             </div>
           </CardContent>
         </Card>
 
         {/* Footer */}
-        <div className="text-center text-xs text-gray-500">Powered by Civic Identity & Aptos Blockchain</div>
+        <div
+          className="text-center text-xs text-white/60 mt-4 tracking-wider animate-fade-in-up"
+          style={{ animationDelay: '400ms' }}
+        >
+          Powered by Civic Identity & Aptos Blockchain
+        </div>
       </div>
     </div>
   )

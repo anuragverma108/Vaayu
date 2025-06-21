@@ -106,7 +106,7 @@ export function AQIAlertCard({ className }: { className?: string }) {
         rel="noopener noreferrer"
         className="block"
       >
-        <Card className="overflow-hidden">
+        <Card className="overflow-hidden bg-black/30 border-gray-700 backdrop-blur-md">
           <img
             src="https://tiles.aqicn.org/tiles/usepa-aqi/4/8/5.png?token=demo"
             alt="Air Quality Map Preview"
@@ -116,16 +116,16 @@ export function AQIAlertCard({ className }: { className?: string }) {
       </a>
 
       {/* 🌬️ AQI Info Card */}
-      <Card>
+      <Card className="bg-black/30 border-gray-700 backdrop-blur-md text-white">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-white">
               <Wind className="w-5 h-5" />
               Air Quality Index
             </CardTitle>
-            {shouldShowAlert && <AlertTriangle className="w-5 h-5 text-orange-500" />}
+            {shouldShowAlert && <AlertTriangle className="w-5 h-5 text-orange-400" />}
           </div>
-          <CardDescription className="flex items-center gap-1">
+          <CardDescription className="flex items-center gap-1 text-gray-300">
             <MapPin className="w-4 h-4" />
             {aqiData?.location || "Detecting..."}
           </CardDescription>
@@ -143,18 +143,18 @@ export function AQIAlertCard({ className }: { className?: string }) {
                 </Badge>
               </div>
 
-              <div className="p-3 bg-muted rounded-lg">
-                <p className="text-sm text-muted-foreground">
+              <div className="p-3 bg-white/10 rounded-lg">
+                <p className="text-sm text-gray-300">
                   <strong>Recommendation:</strong> {aqiData.recommendation}
                 </p>
               </div>
 
-              <div className="text-xs text-muted-foreground">
+              <div className="text-xs text-gray-400">
                 Last updated: {new Date().toLocaleTimeString()}
               </div>
             </>
           ) : (
-            <div className="text-sm text-muted-foreground">Loading AQI data...</div>
+            <div className="text-sm text-gray-400">Loading AQI data...</div>
           )}
         </CardContent>
       </Card>

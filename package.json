@@ -55,6 +55,7 @@
     "dotenv": "^16.5.0",
     "embla-carousel-react": "8.5.1",
     "express": "^5.1.0",
+    "fill-range": "^7.1.1",
     "got": "^14.4.7",
     "input-otp": "1.4.1",
     "lucide-react": "^0.454.0",
