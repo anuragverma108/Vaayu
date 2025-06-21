@@ -1,20 +1,20 @@
 "use client"
 
 import { useState } from "react"
-import { Gift, User, Wallet, FileText, Copy, CheckCircle, ArrowRight, Settings } from "lucide-react"
+import { Gift, User as UserIcon, Wallet, FileText, Copy, CheckCircle, ArrowRight, Settings } from "lucide-react"
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { AQIAlertCard } from "@/components/AQIAlertCard"
 import { getStoredWallet } from "@/lib/aptos"
-import { getStoredCivicUser } from "@/lib/civic"
+import { useUser } from "@civic/auth/react"
 
 export default function DashboardPage() {
   const [copied, setCopied] = useState(false)
+  const { user, isLoading } = useUser()
 
   const wallet = getStoredWallet()
-  const civicUser = getStoredCivicUser()
 
   const handleCopyAddress = async () => {
     if (wallet?.address) {
@@ -93,7 +93,7 @@ export default function DashboardPage() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <User className="w-5 h-5" />
+                    <UserIcon className="w-5 h-5" />
                     Health Profile Setup
                   </CardTitle>
                   <CardDescription>
@@ -133,7 +133,7 @@ export default function DashboardPage() {
                       </Button>
                     </Link>
                     <Button variant="outline" className="w-full justify-start" disabled>
-                      <User className="w-4 h-4 mr-2" />
+                      <UserIcon className="w-4 h-4 mr-2" />
                       View Health History
                       <Badge variant="secondary" className="ml-auto text-xs">
                         Soon
@@ -156,7 +156,9 @@ export default function DashboardPage() {
                 <CardContent className="space-y-3">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Civic ID:</span>
-                    <span className="font-mono text-xs">{civicUser?.userId.slice(-8)}...</span>
+                    <span className="font-mono text-xs">
+                      {isLoading ? "Loading..." : user?.id}
+                    </span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Status:</span>

@@ -21,7 +21,7 @@ export default async function DashboardPage() {
           <div className="border-4 border-dashed border-gray-200 rounded-lg p-6 bg-white">
             <div className="flex items-center justify-between mb-6">
               <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-              <DashboardClient />
+              <DashboardClient user={user} />
             </div>
 
             {/* Welcome Section */}
