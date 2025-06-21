@@ -92,7 +92,7 @@ export async function submitProfileTransaction(
     const transaction = await aptos.transaction.build.simple({
       sender: account.accountAddress,
       data: {
-        function: `${CONTRACT_ADDRESS}::${MODULE_NAME}::set_profile`,
+        function: `${CONTRACT_ADDRESS}::${MODULE_NAME}::set_profile` as `${string}::${string}::${string}`,
         functionArguments: [
           profileData.name,
           profileData.age,
