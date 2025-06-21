@@ -4,12 +4,14 @@ version = "1.0.0"
 authors = []
 
 [addresses]
+onboarding = "0x70beae59414f2e9115a4eaace4edd0409643069b056c8996def20d6e8d322f1a"
 
 [dev-addresses]
+onboarding = "0x70beae59414f2e9115a4eaace4edd0409643069b056c8996def20d6e8d322f1a"
 
 [dependencies.AptosFramework]
 git = "https://github.com/aptos-labs/aptos-framework.git"
-rev = "mainnet"
+rev = "testnet"
 subdir = "aptos-framework"
 
 [dev-dependencies]
