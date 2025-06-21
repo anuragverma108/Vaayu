@@ -70,3 +70,8 @@ function generateRandomString(length: number): string {
   }
   return result
 }
+
+// Check if user has a wallet
+export function hasWallet(): boolean {
+  return getStoredCivicUser() !== null
+}

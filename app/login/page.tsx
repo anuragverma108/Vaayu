@@ -4,24 +4,32 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { CivicLoginButton } from "@/components/CivicLoginButton"
-import { isCivicAuthenticated } from "@/lib/civic"
-import { hasWallet } from "@/lib/aptos"
+import { UserButton } from "@civic/auth-web3/react"
+import { isCivicAuthenticated, hasWallet } from "@/lib/civic"
 import { Leaf, Shield, Wallet, Heart } from "lucide-react"
+import Link from "next/link"
+import ContinueToDashboardButton from "./ContinueToDashboardButton"
 
 export default function LoginPage() {
   const [error, setError] = useState<string>("")
   const [isLoading, setIsLoading] = useState(true)
+  const [isAuthed, setIsAuthed] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
-    // Check if user is already authenticated
-    if (isCivicAuthenticated() && hasWallet()) {
-      router.push("/dashboard")
-    } else {
-      setIsLoading(false)
+    // Initial check
+    if (!isCivicAuthenticated() || !hasWallet()) {
+      setIsLoading(false);
     }
-  }, [router])
+
+    // Polling for authentication
+    const interval = setInterval(() => {
+      const authed = isCivicAuthenticated() && hasWallet();
+      setIsAuthed(authed);
+    }, 500);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleLoginSuccess = () => {
     router.push("/dashboard")
@@ -84,7 +92,10 @@ export default function LoginPage() {
             )}
 
             {/* Login Button */}
-            <CivicLoginButton className="w-full" onSuccess={handleLoginSuccess} onError={handleLoginError} />
+            <UserButton className="w-full" />
+
+            {/* Continue to Dashboard Link (client component) */}
+            <ContinueToDashboardButton />
 
             <div className="text-xs text-center text-gray-500">
               By logging in, you agree to our Terms of Service and Privacy Policy
