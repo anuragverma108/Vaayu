@@ -38,7 +38,7 @@ export default function DashboardPage() {
             </div>
             <div className="flex items-center gap-4">
               <a
-                href="https://voucher-feature-nextjs-eo7u.vercel.app/"
+                href="https://vaayu-voucher-hub.vercel.app/"
                 target="_blank"
                 rel="noopener noreferrer"
               >
