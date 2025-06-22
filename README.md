@@ -182,6 +182,68 @@ http://localhost:3000
 **Issue**: Frequent GPS updates caused API lags and performance issues
 ✅ **Solution**: Optimized with throttled API polling, clustering, and heatmap-based visualization.
 
+## 🔐 Civic Auth Hackathon Track Submission
+
+### 🔐 Civic Auth Integration
+
+Civic Auth is the **core identity layer** in our app, enabling secure, reusable, and seamless authentication across both web and mobile platforms.
+
+- ✅ Civic Auth is integrated on both **React Native (mobile)** and **Next.js (web)** versions.
+- 🔐 Users log in using Civic, receive a verified JWT, and begin a personalized onboarding experience.
+- 🔗 The identity is linked with lifestyle data (age, sleep cycle, walking habits), securely stored on the **Aptos blockchain**.
+- 🧠 This data powers an **AI-driven health recommendation system** based on real-time AQI and personal patterns.
+- Despite limited React Native support, we implemented a custom flow for JWT handling and secure redirect management.
+
+---
+
+### 🚀 Go-to-Market Readiness
+
+Our app directly addresses India's growing **air pollution crisis** by combining identity, location, and health data for proactive wellness support:
+
+- 🏙️ Designed for city dwellers, daily commuters, and vulnerable groups (children, elderly, patients).
+- 📍 Provides real-time AQI zone alerts and daily health guidance.
+- 🎯 Green Token reward system incentivizes healthy actions and can be redeemed for partner discounts and eco-products.
+- 📈 Launch plan includes metro-focused rollouts, brand partnerships, and awareness drives via healthcare networks.
+
+---
+
+### 💡 Use Case & Innovation
+
+We merge:
+
+- **Civic Auth** (secure identity)
+- **Aptos Blockchain** (verifiable health data storage)
+- **Gemini AI** (personalized recommendations)
+- **AQICN + GPS** (live environmental awareness)
+
+This isn’t just an AQI or health app—it’s a **smart wellness assistant** that dynamically adapts to a user's location, lifestyle, and routine using decentralized, privacy-first infrastructure.
+
+---
+
+### 🎥 Presentation & Demo
+
+A working demo is hosted on **Vercel** (Web) and **Expo Go** (Mobile).  
+Our demo video includes:
+
+- Civic login flow  
+- User onboarding with lifestyle data  
+- AQI mapping + live alerts  
+- Health tasks, token rewards, and blockchain sync
+
+---
+
+### ✅ Civic Hackathon Requirements: Checklist
+
+| Requirement              | Status                                                                 |
+|--------------------------|------------------------------------------------------------------------|
+| Civic Auth Integrated    | ✅ Yes, integrated on both Web & Mobile with JWT + session handling     |
+| Working Demo             | ✅ Deployed on Vercel (Web) and Expo (Mobile)                           |
+| 1-Sentence Description   | "A Civic-authenticated health & AQI companion that protects users from pollution and rewards healthy behavior with real-time, blockchain-secured personalization." |
+| GitHub Repository        | ✅ Full source code (frontend, backend, smart contracts) included       |
+| Demo Video               | ✅ Walkthrough of login, AQI alerts, task tracking, token logic         |
+| Original Work            | ✅ 100% original codebase, architecture, and design                     |
+
+
 ## 🧩 Aptos Full-Stack Hackathon Track Submission
 
 ### 🌐 Overview
