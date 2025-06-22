@@ -182,6 +182,51 @@ http://localhost:3000
 **Issue**: Frequent GPS updates caused API lags and performance issues
 ✅ **Solution**: Optimized with throttled API polling, clustering, and heatmap-based visualization.
 
+## 🧩 Aptos Full-Stack Hackathon Track Submission
+
+### 🌐 Overview
+
+This project is a **real-world, full-stack wellness dApp** built on the Aptos blockchain. It securely stores user lifestyle data (age, sleep cycle, etc.) on-chain and leverages it to provide:
+
+- 🔴 Real-time AQI zone alerts and pollution-safe navigation  
+- 🪙 Daily health challenge rewards via a Green Token system  
+- 🤖 AI-powered personalized health advice based on blockchain-stored data  
+- ✅ Transparent and user-owned data using Aptos smart contracts  
+
+The app abstracts blockchain complexity while preserving decentralization and privacy—offering a Web3 experience for non-Web3 users.
+
+---
+
+### ✅ How This Aligns with the Track
+
+| Objective            | Implementation                                                                 |
+|----------------------|---------------------------------------------------------------------------------|
+| **Full-Stack dApp**   | Built using React (web), React Native (mobile), Next.js (backend), and Move    |
+| **Aptos Integration** | Secure on-chain storage of user health data via custom Move smart contracts     |
+| **Smart Contracts**   | Handle user profiles, token eligibility, and metadata storage                  |
+| **Backend**           | Bridges frontend and Aptos using RESTful APIs and Aptos SDK                    |
+| **Frontend**          | React Native + React with AQI mapping, token tracking, and habit visualizations |
+| **Real-World Utility**| Tackles India's pollution crisis with personalized, preventive tech             |
+| **User Experience**   | Civic Auth + tokenless interaction = smooth, non-technical onboarding          |
+
+---
+
+### 🔍 Deep Dive into Aptos Integration
+
+| Layer         | Integration Details                                                                 |
+|---------------|--------------------------------------------------------------------------------------|
+| Smart Contracts | Written in Move to manage health data, tokens, and user onboarding                 |
+| Backend       | Next.js API handles Aptos wallet logic, signing, and on-chain interactions          |
+| Frontend      | React Native + React apps fetch real-time data from AQICN + Aptos-backed APIs       |
+| Storage       | All user metadata (age, habits, etc.) is immutably stored on Aptos for transparency |
+
+---
+
+### 💡 1-Sentence Summary
+
+A full-stack wellness dApp that uses Aptos blockchain to store personal health data and deliver AI-powered, real-time air quality alerts and reward-based lifestyle guidance.
+
+
 ---
 
 ## 🤝 Contributing
