@@ -106,11 +106,6 @@ git clone https://github.com/your-username/vaayu.git
 cd vaayu
 pnpm install
 
-Sure! Here's a **single complete `README.md` section** written in clean **Markdown** for the parts you asked:
-
----
-
-````markdown
 ## 🌱 Setup `.env.local`
 
 To fetch real-time AQI data, create a `.env.local` file in the root directory and add your AQICN API token:
